@@ -9,9 +9,7 @@ function Script2() {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const [genreMovies] = await Promise.all([
-                    fetchGenreMovies(),
-                ]);
+                const [genreMovies] = await Promise.all([fetchGenreMovies()]);
 
                 // Guarda os filmes por gênero buscado
                 setGenreMovies(genreMovies);

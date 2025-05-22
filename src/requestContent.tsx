@@ -90,7 +90,7 @@ export const fetchRecentMovies = async () => {
 
     return trailers;
   } catch (error) {
-    console.error("Erro ao buscar filmes.", error);
+    console.error("Erro ao buscar trailers dos filmes.", error);
     return [];
   }
 };
@@ -140,5 +140,73 @@ export const fetchGenreMovies = async (): Promise<Record<string, any[]>> => {
   } catch (error) {
     console.error("Erro ao buscar filmes.", error);
     return {};
+  }
+};
+
+export const fetchNowPlayingMovies = async () => {
+  try {
+    // Requisita da API os filmes "Now Playing"
+    const res = await api.get("3/movie/now_playing?language=pt-BR", options);
+
+    // Verifica se a resposta da API retornou status 200
+    if (res.status !== 200) {
+      console.error("Resposta inválida da API.");
+      return [];
+    }
+
+    // Formata as datas de cada filme
+    const formatedNowPlayingMovies = res.data.results.map((filme: any) => ({
+      ...filme,
+      release_date: formatDate(filme.release_date),
+    }));
+
+    return formatedNowPlayingMovies;
+  } catch (error) {
+    console.error("Erro ao buscar filmes.", error);
+    return [];
+  }
+};
+
+export const fetchVoteCount = async (movieId: number) => {
+  try {
+    // Requisita da API o filme do Id passado como parâmetro
+    const res = await api.get(`3/movie/${movieId}?language=pt-BR`, options);
+
+    // Verifica se a resposta da API retornou status 200
+    if (res.status !== 200) {
+      console.error("Resposta inválida da API.");
+      return [];
+    }
+
+    // Pega a contagem de votos do filme
+    const voteCount = res.data.vote_count;
+
+    return voteCount;
+  } catch (error) {
+    console.error("Erro ao buscar filmes.", error);
+    return [];
+  }
+};
+
+export const searchContents = async (searchMedia: string): Promise<any[]> => {
+  try {
+    // Requisita da API os filmes baseados na busca
+    const res = await api.get(`3/search/movie?query=${searchMedia}&language=pt-BR`, options);
+
+    // Verifica se a resposta da API retornou status 200
+    if (res.status !== 200) {
+      console.error("Resposta inválida da API.");
+      return [];
+    }
+
+    // Apenas para ordenar os conteúdos que aparecerão na pesquisa por quantidade de votos totais
+    // Isso evita que conteúdos de nome igual, mas sem relevância, apareçam antes dos relevantes
+    const search = res.data.results.sort((a: any, b: any) => b.vote_count - a.vote_count);
+
+    console.log(search);
+    return search;
+  } catch (error) {
+    console.error('Erro ao buscar filmes.', error);
+    return [];
   }
 };

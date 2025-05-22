@@ -2,11 +2,11 @@ import { api, options } from "./api";
 
 // Função para formatar a data de YYYY//MM//DD para DD/MM/AAAA
 function formatDate(dataString: string) {
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(new Date(dataString));
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(dataString));
 }
 
 export const fetchPopularMovies = async () => {
@@ -15,21 +15,21 @@ export const fetchPopularMovies = async () => {
     const res = await api.get("3/movie/popular?language=pt-BR", options);
 
     // Verifica se a resposta da API retornou status 200
-    if (res.status !== 200 || !res.data?.results) {
+    if (res.status !== 200) {
       console.error("Resposta inválida da API.");
-      return []; 
+      return [];
     }
 
     // Formata as datas de cada filme
     const formatedMovies = res.data.results.map((filme: any) => ({
-          ...filme,
-          release_date: formatDate(filme.release_date),
-        }));
-    
+      ...filme,
+      release_date: formatDate(filme.release_date),
+    }));
+
     return formatedMovies;
   } catch (error) {
     console.error("Erro ao buscar filmes.", error);
-    return []; 
+    return [];
   }
 };
 
@@ -39,28 +39,34 @@ export const fetchRecentMovies = async () => {
     const res = await api.get("3/movie/popular?language=pt-br", options);
 
     // Verifica se a resposta da API retornou status 200
-    if (res.status !== 200 || !res.data?.results) {
+    if (res.status !== 200) {
       console.error("Resposta inválida da API.");
-      return []; 
+      return [];
     }
 
     // getTime retorna os milissegundos da data em relação ao passado. Por isso, é possível pegar os mais recentes.
-    const recentMovies = res.data.results.sort((a:any, b:any) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime());
-    
+    const recentMovies = res.data.results.sort((a: any, b: any) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime());
+
     const top5recent = recentMovies.slice(0, 5);
 
     // Formata as datas de cada filme
     const formatedMovies = top5recent.map((movie: any) => ({
-        ...movie,
-        release_date: formatDate(movie.release_date),
+      ...movie,
+      release_date: formatDate(movie.release_date),
     }));
 
-    
+
     const trailers = await Promise.all(
       formatedMovies.map(async (movie: any) => {
         try {
           // Para cada filme dos 5 mais recentes, busca o trailer pelo id
           const fetchTrailers = await api.get(`3/movie/${movie.id}/videos`, options);
+
+          // Verifica se a resposta da API retornou status 200
+          if (res.status !== 200) {
+            console.error("Resposta inválida da API.");
+            return [];
+          }
 
           // Para cada trailer encontrado, verifica se tem no Youtube
           const trailer = fetchTrailers.data.results.find(
@@ -85,6 +91,54 @@ export const fetchRecentMovies = async () => {
     return trailers;
   } catch (error) {
     console.error("Erro ao buscar filmes.", error);
-    return []; 
+    return [];
+  }
+};
+
+// Definindo o valor retornado como sempre sendo <Record<string, any[]>>
+export const fetchGenreMovies = async (): Promise<Record<string, any[]>> => {
+  try {
+    // Requisita da API uma lista com todos os gêneros
+    const res = await api.get("3/genre/movie/list", options);
+
+    // Verifica se a resposta da API retornou status 200
+    if (res.status !== 200) {
+      console.error("Resposta inválida da API.");
+      return {};
+    }
+
+    // Para cada gênero da lista, filtra-se os que começam com a letra "A"
+    const genresA = res.data.genres.filter(
+      // "?" utilizado depois do genre.name[0] para garantir que, caso um gênero não possua nome, ele não será lido
+      (genre: any) => genre.name[0]?.toLowerCase() === "a"
+    );
+
+    // Extraindo os Ids dos gêneros com a letra "A" para mostrar que consegui da forma pedida no desafio
+    // Porém, não usarei o genresIds, pois preciso do nome do gênero para a implementação completa
+    const genresIds = genresA.map((genre: any) => genre.id);
+    console.log(genresIds);
+
+    // Declarado dessa forma para que fosse possível manter o nome do gênero (string) junto aos arrays de filmes buscados (any)
+    const moviesbyGenre: Record<string, any[]> = {};
+
+    await Promise.all(
+      genresA.map(async (genre: any) => {
+        // Busca na API os filmes de acordo com os gêneros listados
+        const res = await api.get(`3/discover/movie?language=pt-br&with_genres=${genre.id}`, options);
+
+        // Verifica se a resposta da API retornou status 200
+        if (res.status !== 200) {
+          console.error("Resposta inválida da API.");
+          return {};
+        }
+
+        moviesbyGenre[genre.name] = res.data.results;
+      })
+    );
+
+    return moviesbyGenre;
+  } catch (error) {
+    console.error("Erro ao buscar filmes.", error);
+    return {};
   }
 };

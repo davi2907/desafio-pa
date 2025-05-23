@@ -39,7 +39,7 @@ function Script3() {
             <div className="absolute top-30 right-30 text-center">
                 <p className="text-white text-lg font-semibold">Desafio Extra:</p>
                 <button
-                    onClick={() => navigate("/buscar")}
+                    onClick={() => navigate("/busca")}
                     className="p-3 text-white bg-blue-700 rounded-full"
                 >
                     <Search className="w-8 h-8" />

@@ -1,54 +1,55 @@
-# React + TypeScript + Vite
+# How to run this React + TypeScript + Vite project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Step 1: Install Git to clone the project
 
-Currently, two official plugins are available:
+#### Windows:
+- Install Git in the official site: https://git-scm.com/
+- Accept all standards options.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+#### Linux (Debian/Ubunto):
+Run the following command in the terminal:
+```bash
+sudo apt install git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+#### MacOS:
+Run the following command in the terminal:
+```bash
+brew install git
 ```
+
+
+## Step 2: Clone Project:
+Run the following command in the terminal replacing what is in parentheses with the github repository::
+```bash
+git clone (link of the github repository)
+cd repository-name
+```
+
+## Step 3: Install npm (Node Package Modules):
+
+#### Windows:
+- Go to official site and install LTS version: https://nodejs.org
+
+#### Linux (Ubunto/Debian):
+Run the following command in the terminal:
+```bash
+sudo apt install nodejs npm
+```
+
+#### MacOS:
+Run the following command in the terminal:
+```bash
+brew install node
+```
+
+## Step 4: Install Dependencies
+Open the project and run the following commands in the terminal:
+```bash
+npm install
+npm install tailwindcss @tailwindcss/vite
+npm run dev
+```
+
+## Step 5: Now you can use!
+Just run the local server on a browser and use it.

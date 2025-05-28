@@ -45,7 +45,7 @@ export const fetchRecentMovies = async () => {
     }
 
     // getTime retorna os milissegundos da data em relação ao passado. Por isso, é possível pegar os mais recentes.
-    const recentMovies = res.data.results.sort((a: any, b: any) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime());
+    const recentMovies = res.data.results.sort((a: any, b: any) => a.release_date < b.release_date ? 1 : -1);
 
     const top5recent = recentMovies.slice(0, 5);
 
@@ -76,7 +76,7 @@ export const fetchRecentMovies = async () => {
           return {
             ...movie,
             // Salva chave do trailer se houver no Youtube
-            trailerUrl: trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null,
+            trailerUrl: trailer ? `https://www.youtube.com/embed/${trailer.key}` : null,
           };
         } catch (trailerError) {
           console.warn(`Erro ao buscar trailer para o filme ${movie.id}.`);

@@ -60,7 +60,7 @@ function Script1() {
                   <iframe
                     width="500"
                     height="300"
-                    src={movie.trailerUrl.replace("watch?v=", "embed/")}
+                    src={movie.trailerUrl}
                     title="Trailer"
                     allowFullScreen
                   />

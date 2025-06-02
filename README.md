@@ -53,3 +53,7 @@ npm run dev
 
 ## Step 5: Now you can use!
 Just run the local server on a browser and use it.
+
+## Important Observation
+You need to get an API key from TMDb to use it. If you have one, create a file in root named ".env" and add this there:
+VITE_TMDB_TOKEN=Bearer YourKeyToken

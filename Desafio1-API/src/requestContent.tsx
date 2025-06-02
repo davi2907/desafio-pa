@@ -1,4 +1,4 @@
-import { api, options } from "./api";
+import { api } from "./api";
 
 // Função para formatar a data de YYYY//MM//DD para DD/MM/AAAA
 function formatDate(dataString: string) {
@@ -12,7 +12,7 @@ function formatDate(dataString: string) {
 export const fetchPopularMovies = async () => {
   try {
     // Requisita da API os filmes populares
-    const res = await api.get("3/movie/popular?language=pt-BR", options);
+    const res = await api.get("3/movie/popular?language=pt-BR");
 
     // Verifica se a resposta da API retornou status 200
     if (res.status !== 200) {
@@ -36,7 +36,7 @@ export const fetchPopularMovies = async () => {
 export const fetchRecentMovies = async () => {
   try {
     // Requisita da API os filmes recentes
-    const res = await api.get("3/movie/popular?language=pt-br", options);
+    const res = await api.get("3/movie/popular?language=pt-br");
 
     // Verifica se a resposta da API retornou status 200
     if (res.status !== 200) {
@@ -44,7 +44,7 @@ export const fetchRecentMovies = async () => {
       return [];
     }
 
-    // getTime retorna os milissegundos da data em relação ao passado. Por isso, é possível pegar os mais recentes.
+    // Compara os filmes entre si em relação a sua data de lançamento, garantindo que os mais recentes estjam na frente
     const recentMovies = res.data.results.sort((a: any, b: any) => a.release_date < b.release_date ? 1 : -1);
 
     const top5recent = recentMovies.slice(0, 5);
@@ -60,7 +60,7 @@ export const fetchRecentMovies = async () => {
       formatedMovies.map(async (movie: any) => {
         try {
           // Para cada filme dos 5 mais recentes, busca o trailer pelo id
-          const fetchTrailers = await api.get(`3/movie/${movie.id}/videos`, options);
+          const fetchTrailers = await api.get(`3/movie/${movie.id}/videos`);
 
           // Verifica se a resposta da API retornou status 200
           if (res.status !== 200) {
@@ -99,7 +99,7 @@ export const fetchRecentMovies = async () => {
 export const fetchGenreMovies = async (): Promise<Record<string, any[]>> => {
   try {
     // Requisita da API uma lista com todos os gêneros
-    const res = await api.get("3/genre/movie/list", options);
+    const res = await api.get("3/genre/movie/list");
 
     // Verifica se a resposta da API retornou status 200
     if (res.status !== 200) {
@@ -124,7 +124,7 @@ export const fetchGenreMovies = async (): Promise<Record<string, any[]>> => {
     await Promise.all(
       genresA.map(async (genre: any) => {
         // Busca na API os filmes de acordo com os gêneros listados
-        const res = await api.get(`3/discover/movie?language=pt-br&with_genres=${genre.id}`, options);
+        const res = await api.get(`3/discover/movie?language=pt-br&with_genres=${genre.id}`);
 
         // Verifica se a resposta da API retornou status 200
         if (res.status !== 200) {
@@ -146,7 +146,7 @@ export const fetchGenreMovies = async (): Promise<Record<string, any[]>> => {
 export const fetchNowPlayingMovies = async () => {
   try {
     // Requisita da API os filmes "Now Playing"
-    const res = await api.get("3/movie/now_playing?language=pt-BR", options);
+    const res = await api.get("3/movie/now_playing?language=pt-BR");
 
     // Verifica se a resposta da API retornou status 200
     if (res.status !== 200) {
@@ -167,31 +167,10 @@ export const fetchNowPlayingMovies = async () => {
   }
 };
 
-export const fetchVoteCount = async (movieId: number) => {
-  try {
-    // Requisita da API o filme do Id passado como parâmetro
-    const res = await api.get(`3/movie/${movieId}?language=pt-BR`, options);
-
-    // Verifica se a resposta da API retornou status 200
-    if (res.status !== 200) {
-      console.error("Resposta inválida da API.");
-      return [];
-    }
-
-    // Pega a contagem de votos do filme
-    const voteCount = res.data.vote_count;
-
-    return voteCount;
-  } catch (error) {
-    console.error("Erro ao buscar filmes.", error);
-    return [];
-  }
-};
-
 export const searchContents = async (searchMedia: string): Promise<any[]> => {
   try {
     // Requisita da API os filmes baseados na busca
-    const res = await api.get(`3/search/movie?query=${searchMedia}&language=pt-BR`, options);
+    const res = await api.get(`3/search/movie?query=${searchMedia}&language=pt-BR`);
 
     // Verifica se a resposta da API retornou status 200
     if (res.status !== 200) {

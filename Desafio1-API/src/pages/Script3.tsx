@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../index.css"
-import { fetchNowPlayingMovies, fetchVoteCount } from "../requestContent";
+import { fetchNowPlayingMovies } from "../requestContent";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,13 +13,13 @@ function Script3() {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const [nowPlayingMovies] = await Promise.all([fetchNowPlayingMovies()]);
+                const nowPlayingMovies = await fetchNowPlayingMovies();
 
                 // Guarda os filmes em now playing
                 setNowPlayingMovies(nowPlayingMovies);
 
                 // Filme escolhido para retornar a contagem de votos
-                const voteCount = await fetchVoteCount(nowPlayingMovies[0].id);
+                const voteCount = nowPlayingMovies[0].vote_count;
                 setVoteCount(voteCount);
 
             } catch (error) {
